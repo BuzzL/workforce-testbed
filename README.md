@@ -14,7 +14,7 @@ The code is deliberately small but real, with tests and CI, so every agent chang
 | Repository | Purpose |
 |---|---|
 | [workforce-infra](https://github.com/BuzzL/workforce-infra) | Terraform: AWS Organization, workforce and environment accounts, cross-account roles |
-| [workforce-images](https://github.com/BuzzL/workforce-images) | Developer container images (Python, Java) for agents and devcontainers |
+| [workforce-images](https://github.com/BuzzL/workforce-images) | Developer container images (base, Python) for agents and devcontainers |
 | **workforce-testbed** | This repo: the TypeScript codebase the agents iterate on |
 
 ## Environments
