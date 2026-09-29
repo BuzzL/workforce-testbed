@@ -24,6 +24,10 @@ No local Node? Push the branch, then run `gh workflow run autofix.yml --ref <bra
 
 release-please (`.github/workflows/release.yml`) keeps a release PR open on `main` and derives the next SemVer from Conventional Commits. Merging it tags `vX.Y.Z` and publishes a GitHub Release. It authenticates as the `buzzl-workforce-agent` GitHub App (secret `AGENT_APP_PRIVATE_KEY`, variable `AGENT_APP_CLIENT_ID`) so the release PR triggers CI.
 
+## Deploys
+
+`.github/workflows/deploy.yml` deploys to the `development` GitHub Environment on every push to `main`, and to `production` when a release is published. `production` needs maintainer approval and only accepts `main` or `v*` tags. The deploy step is a stub until `workforce-infra` provides the accounts and OIDC roles.
+
 ## Layout
 
 - `src/app.ts`: `buildApp()`, the Fastify app and routes (the unit under test)
