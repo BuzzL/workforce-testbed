@@ -1,0 +1,29 @@
+# Regenerates package-lock.json and applies Prettier formatting in CI, then
+# commits the result to the dispatched branch, so contributors (and agents)
+# do not need a local Node toolchain.
+# Usage: gh workflow run autofix.yml --ref <feature-branch>
+name: Autofix
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  autofix:
+    # Never write to the default branch; it only changes through PRs.
+    if: github.ref_name != github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+      - name: Refresh lockfile and install
+        run: npm install --ignore-scripts --no-audit --no-fund
+      - name: Format
+        run: npm run format
+      - uses: stefanzweifel/git-auto-commit-action@v7
+        with:
+          commit_message: "chore: autofix lockfile and formatting"
