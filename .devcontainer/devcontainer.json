@@ -1,0 +1,15 @@
+{
+  "name": "workforce-testbed",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:4-24-trixie",
+  "postCreateCommand": "npm ci",
+  "forwardPorts": [3000],
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "vitest.explorer"
+      ]
+    }
+  }
+}
