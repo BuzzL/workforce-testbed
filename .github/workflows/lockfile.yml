@@ -1,0 +1,34 @@
+# Regenerates package-lock.json in CI and commits it to the dispatched branch,
+# so dependency changes can be made without a local Node toolchain.
+# Usage: gh workflow run lockfile.yml --ref <feature-branch>
+name: Refresh lockfile
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  lockfile:
+    # Never write to the default branch; it only changes through PRs.
+    if: github.ref_name != github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Skip when there is no package.json
+        id: check
+        run: |
+          if [ -f package.json ]; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "No package.json, nothing to do."; fi
+      - uses: actions/setup-node@v7
+        if: steps.check.outputs.present == 'true'
+        with:
+          node-version-file: .nvmrc
+      - name: Regenerate lockfile
+        if: steps.check.outputs.present == 'true'
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - uses: stefanzweifel/git-auto-commit-action@v7
+        if: steps.check.outputs.present == 'true'
+        with:
+          commit_message: "build: refresh package-lock.json"
+          file_pattern: package-lock.json
