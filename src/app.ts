@@ -25,16 +25,13 @@ export function buildApp(options: AppOptions = {}): FastifyInstance {
 
   app.get("/issues", () => store.list());
 
-  app.get<{ Params: { id: string } }>(
-    "/issues/:id",
-    async (request, reply) => {
-      const issue = store.get(request.params.id);
-      if (!issue) {
-        return reply.code(404).send({ error: "Issue not found" });
-      }
-      return issue;
-    },
-  );
+  app.get<{ Params: { id: string } }>("/issues/:id", async (request, reply) => {
+    const issue = store.get(request.params.id);
+    if (!issue) {
+      return reply.code(404).send({ error: "Issue not found" });
+    }
+    return issue;
+  });
 
   app.post<{ Body: { title: string } }>(
     "/issues",
