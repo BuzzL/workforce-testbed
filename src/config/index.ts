@@ -2,7 +2,12 @@ import { development } from "./development.js";
 import { production } from "./production.js";
 import { APP_ENVS, type AppConfig, type AppEnv } from "./types.js";
 
-export { APP_ENVS, type AppConfig, type AppEnv, type LogLevel } from "./types.js";
+export {
+  APP_ENVS,
+  type AppConfig,
+  type AppEnv,
+  type LogLevel,
+} from "./types.js";
 
 const configs: Record<AppEnv, AppConfig> = { development, production };
 
