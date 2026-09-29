@@ -1,9 +1,11 @@
 import Fastify, { type FastifyInstance } from "fastify";
 
+import { type AppConfig, loadConfig } from "./config/index.js";
 import { type Issue, IssueStore } from "./issues/store.js";
 import { SERVICE_NAME } from "./service.js";
 
 export interface AppOptions {
+  config?: AppConfig;
   store?: IssueStore;
   logger?: boolean;
 }
@@ -18,10 +20,17 @@ const createIssueSchema = {
 } as const;
 
 export function buildApp(options: AppOptions = {}): FastifyInstance {
-  const app = Fastify({ logger: options.logger ?? false });
+  const config = options.config ?? loadConfig({});
+  const app = Fastify({
+    logger: options.logger ? { level: config.logLevel } : false,
+  });
   const store = options.store ?? new IssueStore();
 
-  app.get("/health", () => ({ status: "ok", service: SERVICE_NAME }));
+  app.get("/health", () => ({
+    status: "ok",
+    service: SERVICE_NAME,
+    environment: config.env,
+  }));
 
   app.get("/issues", () => store.list());
 

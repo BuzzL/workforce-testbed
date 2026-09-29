@@ -1,7 +1,13 @@
 import type { FastifyInstance } from "fastify";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import { buildApp, IssueStore, SERVICE_NAME } from "../src/index.js";
+import { development } from "../src/config/development.js";
+import {
+  buildApp,
+  IssueStore,
+  loadConfig,
+  SERVICE_NAME,
+} from "../src/index.js";
 
 describe("http api", () => {
   let app: FastifyInstance;
@@ -18,7 +24,11 @@ describe("http api", () => {
     const response = await app.inject({ method: "GET", url: "/health" });
 
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual({ status: "ok", service: SERVICE_NAME });
+    expect(response.json()).toEqual({
+      status: "ok",
+      service: SERVICE_NAME,
+      environment: "development",
+    });
   });
 
   it("creates, lists and fetches an issue", async () => {
@@ -71,10 +81,26 @@ describe("http api", () => {
 });
 
 describe("buildApp options", () => {
+  it("reports the configured environment", async () => {
+    const app = buildApp({ config: loadConfig({ APP_ENV: "production" }) });
+
+    const response = await app.inject({ method: "GET", url: "/health" });
+
+    expect(response.json()).toMatchObject({ environment: "production" });
+    await app.close();
+  });
+
+  it("logs at the configured level when logging is enabled", async () => {
+    const app = buildApp({ config: development, logger: true });
+
+    expect(app.log.level).toBe("debug");
+    await app.close();
+  });
+
   it("uses the provided store", async () => {
     const store = new IssueStore();
     store.create("Seeded");
-    const app = buildApp({ store, logger: false });
+    const app = buildApp({ store });
 
     const response = await app.inject({ method: "GET", url: "/issues" });
 
