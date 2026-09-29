@@ -20,6 +20,10 @@ The TypeScript application that AI Workforce agents iterate on. Cross-repo conte
 
 No local Node? Push the branch, then run `gh workflow run autofix.yml --ref <branch>`. It regenerates `package-lock.json`, applies Prettier and commits the result to the branch. Run it before opening the PR so CI runs on the fixed head. It never runs on `main`.
 
+## Releases
+
+release-please (`.github/workflows/release.yml`) keeps a release PR open on `main` and derives the next SemVer from Conventional Commits. Merging it tags `vX.Y.Z` and publishes a GitHub Release. It authenticates as the `buzzl-workforce-agent` GitHub App (secret `AGENT_APP_PRIVATE_KEY`, variable `AGENT_APP_CLIENT_ID`) so the release PR triggers CI.
+
 ## Layout
 
 - `src/app.ts`: `buildApp()`, the Fastify app and routes (the unit under test)
