@@ -6,6 +6,8 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       include: ["src/**/*.ts"],
+      // Process entrypoint; covered by the CI smoke test instead.
+      exclude: ["src/server.ts"],
       reporter: ["text", "lcov"],
       thresholds: {
         lines: 80,

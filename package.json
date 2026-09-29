@@ -13,10 +13,15 @@
     "node": ">=24"
   },
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "start": "node dist/server.js",
     "lint": "eslint . && prettier --check .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run --coverage"
+  },
+  "dependencies": {
+    "fastify": "^5.12.5"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
