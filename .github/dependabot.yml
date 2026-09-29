@@ -12,6 +12,10 @@ updates:
       interval: weekly
     commit-message:
       prefix: build
+    ignore:
+      # Types must match the Node runtime major in .nvmrc.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
     groups:
       dev-dependencies:
         dependency-type: development
