@@ -8,6 +8,21 @@ The TypeScript application that AI Workforce agents iterate on. Cross-repo conte
 - Changes land on `main` only through a squash-merged PR with green CI.
 - Public repo: no secrets, AWS account IDs, emails or ARNs.
 
+## Commands
+
+| Command | What it does |
+|---|---|
+| `npm run lint` | ESLint + Prettier check |
+| `npm run format` | Prettier write |
+| `npm run typecheck` | `tsc --noEmit` over `src/` and `test/` |
+| `npm test` | Vitest with v8 coverage (80% thresholds) |
+| `npm run build` / `npm start` | compile to `dist/` / run the server (`PORT`, `HOST`) |
+
+No local Node? Push the branch, then run `gh workflow run autofix.yml --ref <branch>`. It regenerates `package-lock.json`, applies Prettier and commits the result to the branch. Run it before opening the PR so CI runs on the fixed head. It never runs on `main`.
+
 ## Layout
 
-_Skeleton in progress: toolchain, tests and app are added commit by commit._
+- `src/app.ts`: `buildApp()`, the Fastify app and routes (the unit under test)
+- `src/server.ts`: process entrypoint (excluded from coverage; covered by the CI smoke test)
+- `src/issues/`: the issue domain (`normalizeTitle`, in-memory `IssueStore`)
+- `test/`: Vitest tests mirroring `src/`, using `app.inject()` for HTTP
