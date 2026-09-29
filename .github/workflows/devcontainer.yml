@@ -1,0 +1,27 @@
+# Builds the devcontainer and runs the checks inside it. Only runs when the
+# devcontainer changes, so it is not a required status check.
+name: Devcontainer
+
+on:
+  pull_request:
+    paths:
+      - .devcontainer/**
+      - .github/workflows/devcontainer.yml
+  push:
+    branches: [main]
+    paths:
+      - .devcontainer/**
+      - .github/workflows/devcontainer.yml
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: devcontainers/ci@v0.3
+        with:
+          push: never
+          runCmd: npm run lint && npm run typecheck && npm test
