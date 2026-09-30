@@ -55,7 +55,10 @@ export function buildApp(options: AppOptions = {}): FastifyInstance {
         }
         throw error;
       }
-      return reply.code(201).send(issue);
+      return reply
+        .code(201)
+        .header("location", `/issues/${issue.id}`)
+        .send(issue);
     },
   );
 
