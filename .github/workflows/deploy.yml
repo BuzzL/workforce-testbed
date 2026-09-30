@@ -1,4 +1,4 @@
-# Deploys to development on every push to main and to production when a
+# Deploys to test on every push to main and to demo when a
 # release is published. The deploy step is a stub until workforce-infra
 # provides the environment accounts and the GitHub OIDC roles.
 name: Deploy
@@ -13,12 +13,12 @@ permissions:
   contents: read
 
 jobs:
-  development:
+  test:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
-    environment: development
+    environment: test
     concurrency:
-      group: deploy-development
+      group: deploy-test
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v7
@@ -29,14 +29,14 @@ jobs:
       - run: npm ci
       - run: npm run build
       - name: Deploy (stub)
-        run: echo "Would deploy ${GITHUB_SHA::7} to development"
+        run: echo "Would deploy ${GITHUB_SHA::7} to test"
 
-  production:
+  demo:
     if: github.event_name == 'release'
     runs-on: ubuntu-latest
-    environment: production
+    environment: demo
     concurrency:
-      group: deploy-production
+      group: deploy-demo
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v7
@@ -47,4 +47,4 @@ jobs:
       - run: npm ci
       - run: npm run build
       - name: Deploy (stub)
-        run: echo "Would deploy ${{ github.event.release.tag_name }} to production"
+        run: echo "Would deploy ${{ github.event.release.tag_name }} to demo"
