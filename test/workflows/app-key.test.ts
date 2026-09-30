@@ -8,7 +8,11 @@ const SECRET = "AGENT_APP_PRIVATE_KEY";
 const DIR = fileURLToPath(new URL("../../.github/workflows", import.meta.url));
 const OUTSIDE_JOB = "<outside a job>";
 // Ways to reach every secret without naming the App key.
-const BROAD_ACCESS = [/secrets:\s*inherit/, /toJSON\(\s*secrets\s*\)/, /secrets\[/];
+const BROAD_ACCESS = [
+  /secrets:\s*inherit/,
+  /toJSON\(\s*secrets\s*\)/,
+  /secrets\[/,
+];
 
 /** Problems that would let a workflow read the App key outside `agent-app`. */
 function violations(text: string): string[] {
@@ -85,15 +89,19 @@ describe("agent App key scope", () => {
   });
 
   it("flags the key outside any job", () => {
-    expect(violations(`env:\n  K: \${{ secrets.${SECRET} }}\njobs:\n`)).toEqual([
-      OUTSIDE_JOB,
-    ]);
+    expect(violations(`env:\n  K: \${{ secrets.${SECRET} }}\njobs:\n`)).toEqual(
+      [OUTSIDE_JOB],
+    );
   });
 
   it("flags broad secret access", () => {
     expect(violations("jobs:\n  a:\n    secrets: inherit\n")).toHaveLength(1);
-    expect(violations("jobs:\n  a:\n    env: ${{ toJSON(secrets) }}\n")).toHaveLength(1);
-    expect(violations("jobs:\n  a:\n    env: ${{ secrets['X'] }}\n")).toHaveLength(1);
+    expect(
+      violations("jobs:\n  a:\n    env: ${{ toJSON(secrets) }}\n"),
+    ).toHaveLength(1);
+    expect(
+      violations("jobs:\n  a:\n    env: ${{ secrets['X'] }}\n"),
+    ).toHaveLength(1);
   });
 
   it("every workflow uses the key only through agent-app", () => {
