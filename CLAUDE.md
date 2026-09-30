@@ -6,7 +6,7 @@ The TypeScript application that AI Workforce agents iterate on. Cross-repo conte
 
 - **Commit rule**: every commit is short (one logical change), testable (it comes with the test/check that proves it) and not breakable (CI green on its own). Conventional Commits, because release-please derives versions from them.
 - Changes land on `main` only through a squash-merged PR with green CI.
-- **Branches** are named `feature/{ticket-id}-{short-summary}` (e.g. `feature/IAT-22-devcontainer-published-image`), with the Linear key as written in Linear. Create them from an up-to-date `main`.
+- **Branches** that humans and agents create are named `feature/{ticket-id}-{short-summary}` (e.g. `feature/IAT-22-devcontainer-published-image`), with the Linear key as written in Linear (uppercase), so edit the name Linear copies. Bot-managed branches (`release-please--*`, `dependabot/*`, `deps/*`) keep their generated names. Create branches from an up-to-date `main`.
 - Public repo: no secrets, AWS account IDs, emails or ARNs.
 
 ## Commands
