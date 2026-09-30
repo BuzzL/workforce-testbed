@@ -49,6 +49,12 @@ describe("deploy workflow", () => {
     }
   });
 
+  it("is triggered by pull_request and push only", () => {
+    const block = /^on:\n((?: {2}.*\n|\n)+)/m.exec(text)?.[1] ?? "";
+    const triggers = [...block.matchAll(/^ {2}(\w+):/gm)].map((m) => m[1]);
+    expect(triggers).toEqual(["pull_request", "push"]);
+  });
+
   it("deploys demo from v* tags only and never touches release branches", () => {
     const code = text
       .split("\n")
