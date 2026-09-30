@@ -21,8 +21,9 @@ The code is deliberately small but real, with tests and CI, so every agent chang
 
 | Environment | Deployed when | Protection |
 |---|---|---|
-| `development` | every merge to `main` | none |
-| `production` | a release is published | maintainer approval |
+| `test` | every merge to `main` | none |
+| `qa` | not wired yet (promotion is defined in milestone M6) | none |
+| `demo` | a release is published | maintainer approval |
 
 ## Contributing
 
