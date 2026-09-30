@@ -26,6 +26,14 @@ No local Node? Push the branch, then run `gh workflow run autofix.yml --ref <bra
 
 release-please (`.github/workflows/release.yml`) keeps a release PR open on `main` and derives the next SemVer from Conventional Commits. Merging it tags `vX.Y.Z` and publishes a GitHub Release. It authenticates as the `buzzl-workforce-agent` GitHub App (secret `AGENT_APP_PRIVATE_KEY`, variable `AGENT_APP_CLIENT_ID`) so the release PR triggers CI.
 
+The key is an **environment secret** of the GitHub Environment `agent-app` (limited to `main`, no reviewers), used by the `release-please` job via `environment: agent-app`, so PR workflows cannot read it. `test/workflows/app-key.test.ts` fails if any workflow uses it without that environment. `workforce-images` uses the same environment for its weekly `Bump pins`.
+
+### GitHub App `buzzl-workforce-agent`: minimal permissions
+
+- Repository permissions: **Contents** write (push branches, tags, releases), **Pull requests** write (open and update PRs), **Workflows** write (only so agent PRs may edit `.github/workflows/*`; drop it if that is never needed), **Checks** read, **Actions** read (runs and logs), **Metadata** read.
+- Not granted: Administration, Environments, Secrets, Variables, Deployments. Verified by probes returning 403 (Actions is read-only: cancel/delete returns 403).
+- Key storage: the `.pem` lives in a local file now and as the `agent-app` environment secret in the repos above. Later (M4) it moves to Secrets Manager in the `workforce` account, injected into the ECS task, and the GitHub copies are removed. Rotate the key when it moves.
+
 ## Deploys
 
 `.github/workflows/deploy.yml` deploys to the `development` GitHub Environment on every push to `main`, and to `production` when a release is published. `production` needs maintainer approval and only accepts `main` or `v*` tags. The deploy step is a stub until `workforce-infra` provides the accounts and OIDC roles.
