@@ -1,6 +1,6 @@
 import type { AppConfig } from "./types.js";
 
-export const development: AppConfig = {
-  env: "development",
+export const test: AppConfig = {
+  env: "test",
   logLevel: "debug",
 };

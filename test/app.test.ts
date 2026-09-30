@@ -1,7 +1,7 @@
 import type { FastifyInstance } from "fastify";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 
-import { development } from "../src/config/development.js";
+import { test as testConfig } from "../src/config/test.js";
 import {
   buildApp,
   IssueStore,
@@ -27,7 +27,7 @@ describe("http api", () => {
     expect(response.json()).toEqual({
       status: "ok",
       service: SERVICE_NAME,
-      environment: "development",
+      environment: "test",
     });
   });
 
@@ -88,16 +88,16 @@ describe("http api", () => {
 
 describe("buildApp options", () => {
   it("reports the configured environment", async () => {
-    const app = buildApp({ config: loadConfig({ APP_ENV: "production" }) });
+    const app = buildApp({ config: loadConfig({ APP_ENV: "demo" }) });
 
     const response = await app.inject({ method: "GET", url: "/health" });
 
-    expect(response.json()).toMatchObject({ environment: "production" });
+    expect(response.json()).toMatchObject({ environment: "demo" });
     await app.close();
   });
 
   it("logs at the configured level when logging is enabled", async () => {
-    const app = buildApp({ config: development, logger: true });
+    const app = buildApp({ config: testConfig, logger: true });
 
     expect(app.log.level).toBe("debug");
     await app.close();
