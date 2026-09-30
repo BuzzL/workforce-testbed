@@ -20,7 +20,7 @@ jobs:
       release_created: ${{ steps.release.outputs.release_created }}
       tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
-      # The workforce-agent App token (not GITHUB_TOKEN) is used so the release
+      # The agent App token (not GITHUB_TOKEN) is used so the release
       # PR triggers CI and can satisfy the required status checks.
       - uses: actions/create-github-app-token@v3
         id: app-token

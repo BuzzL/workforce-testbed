@@ -24,15 +24,9 @@ No local Node? Push the branch, then run `gh workflow run autofix.yml --ref <bra
 
 ## Releases
 
-release-please (`.github/workflows/release.yml`) keeps a release PR open on `main` and derives the next SemVer from Conventional Commits. Merging it tags `vX.Y.Z` and publishes a GitHub Release. It authenticates as the `buzzl-workforce-agent` GitHub App (secret `AGENT_APP_PRIVATE_KEY`, variable `AGENT_APP_CLIENT_ID`) so the release PR triggers CI.
+release-please (`.github/workflows/release.yml`) keeps a release PR open on `main` and derives the next SemVer from Conventional Commits. Merging it tags `vX.Y.Z` and publishes a GitHub Release. It authenticates as the workforce agent GitHub App (secret `AGENT_APP_PRIVATE_KEY`, variable `AGENT_APP_CLIENT_ID`) so the release PR triggers CI.
 
-The key is an **environment secret** of the GitHub Environment `agent-app` (limited to `main`, no reviewers), used by the `release-please` job via `environment: agent-app`, so PR workflows cannot read it. `test/workflows/app-key.test.ts` (a line-based check, no YAML parser) fails if any workflow file uses it without that environment, outside a job, or reaches it through `secrets: inherit`, `toJSON(secrets)` or `secrets[...]`. Any workflow on `main` can still read it, so CODEOWNERS approval on workflow changes is the real control. `workforce-images` uses the same environment for its weekly `Bump pins`.
-
-### GitHub App `buzzl-workforce-agent`: minimal permissions
-
-- Repository permissions: **Contents** write (push branches, tags, releases), **Pull requests** write (open and update PRs), **Checks** read, **Actions** read (runs and logs), **Metadata** read.
-- Not granted: **Workflows** (agent PRs cannot edit `.github/workflows/*`; add it back only for a task that needs it), Administration, Environments, Secrets, Variables, Deployments. Checked by hand on 2026-09-30 by probing the API (403 for the missing permissions and for Actions cancel/delete).
-- Key storage: the `.pem` lives in a local file now and as the `agent-app` environment secret in the repos above. Later (M4) it moves to Secrets Manager in the `workforce` account, injected into the ECS task, and the GitHub copies are removed. Rotate the key when it moves.
+The App key is an **environment secret** of the GitHub Environment `agent-app` (limited to `main`), used by the `release-please` job via `environment: agent-app`, so PR workflows cannot read it. `test/workflows/app-key.test.ts` (a line-based lint) fails if a workflow uses it without that environment. Setup, minimal App permissions, key storage and rotation live in one place: `docs/AGENT_APP_KEY.md` in `workforce-images`.
 
 ## Deploys
 
