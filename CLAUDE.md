@@ -18,7 +18,7 @@ The TypeScript application that AI Workforce agents iterate on. Cross-repo conte
 | `npm test` | Vitest with v8 coverage (80% thresholds) |
 | `npm run build` / `npm start` | compile to `dist/` / run the server (`PORT`, `HOST`) |
 
-Local development: open the repo in its devcontainer (`.devcontainer/`, Node 24). Its build is verified by the `Devcontainer` workflow whenever it changes.
+Local development: open the repo in its devcontainer (`.devcontainer/`, Node 24). It uses the `base` image from `workforce-images`, pinned by digest; bump the digest by hand when a new image is published. Its build is verified by the `Devcontainer` workflow whenever it changes.
 
 No local Node? Push the branch, then run `gh workflow run autofix.yml --ref <branch>`. It regenerates `package-lock.json`, applies Prettier and commits the result to the branch. Run it before opening the PR so CI runs on the fixed head. It never runs on `main`.
 
