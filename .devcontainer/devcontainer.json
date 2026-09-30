@@ -1,7 +1,7 @@
 {
   "name": "workforce-testbed",
-  // workforce-images base 0.1.0, pinned by digest
-  "image": "ghcr.io/buzzl/workforce-images/base@sha256:215494f60fa32cc4532cb132cb7c26b618cf381acb194d44280ceb090c4b7f0c",
+  // workforce-images base 0.1.1, pinned by digest
+  "image": "ghcr.io/buzzl/workforce-images/base@sha256:911a2b9afaf8e76818991ca2c1ad918d7a0d01038e707931854c17532fce520d",
   "postCreateCommand": "npm ci",
   "forwardPorts": [3000],
   "customizations": {
