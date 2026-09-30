@@ -1,6 +1,8 @@
 # Deploys to test for every pull request, to qa on every push to main and
-# to demo when a release (a v* tag) is published. The deploy step is a stub until workforce-infra
-# provides the environment accounts and the GitHub OIDC roles.
+# to demo when a v* tag is pushed. The release/* branches (the real
+# production release) are manual and deliberately not handled here. The
+# deploy step is a stub until workforce-infra provides the environment
+# accounts and the GitHub OIDC roles.
 name: Deploy
 
 on:
@@ -8,8 +10,7 @@ on:
     branches: [main]
   push:
     branches: [main]
-  release:
-    types: [published]
+    tags: ["v*"]
 
 permissions:
   contents: read
@@ -34,7 +35,7 @@ jobs:
         run: echo "Would deploy ${GITHUB_SHA::7} to test"
 
   qa:
-    if: github.event_name == 'push'
+    if: github.ref_type == 'branch' && github.event_name == 'push'
     runs-on: ubuntu-latest
     environment: qa
     concurrency:
@@ -52,7 +53,7 @@ jobs:
         run: echo "Would deploy ${GITHUB_SHA::7} to qa"
 
   demo:
-    if: github.event_name == 'release'
+    if: github.ref_type == 'tag'
     runs-on: ubuntu-latest
     environment: demo
     concurrency:
@@ -67,4 +68,4 @@ jobs:
       - run: npm ci
       - run: npm run build
       - name: Deploy (stub)
-        run: echo "Would deploy ${{ github.event.release.tag_name }} to demo"
+        run: echo "Would deploy ${GITHUB_REF_NAME} to demo"

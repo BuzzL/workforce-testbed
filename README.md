@@ -23,7 +23,7 @@ The code is deliberately small but real, with tests and CI, so every agent chang
 |---|---|---|
 | `test` | every pull request | none |
 | `qa` | every merge to `main` | none |
-| `demo` | a release is published | maintainer approval |
+| `demo` | a `v*` tag is pushed | maintainer approval |
 
 ## Contributing
 

@@ -31,11 +31,11 @@ describe("deploy workflow", () => {
   const text = readFileSync(DEPLOY, "utf8");
   const found = environments(text);
 
-  it("gates test on pull requests, qa on main and demo on release", () => {
+  it("gates test on pull requests, qa on main and demo on tags", () => {
     expect(guards(text)).toEqual({
       test: "github.event_name == 'pull_request'",
-      qa: "github.event_name == 'push'",
-      demo: "github.event_name == 'release'",
+      qa: "github.ref_type == 'branch' && github.event_name == 'push'",
+      demo: "github.ref_type == 'tag'",
     });
   });
 
@@ -47,5 +47,15 @@ describe("deploy workflow", () => {
     for (const env of found) {
       expect(APP_ENVS as readonly string[]).toContain(env);
     }
+  });
+
+  it("deploys demo from v* tags only and never touches release branches", () => {
+    const code = text
+      .split("\n")
+      .filter((line) => !line.trimStart().startsWith("#"))
+      .join("\n");
+    expect(code).toMatch(/tags: \[["']v\*["']\]/);
+    expect(code).not.toMatch(/release\//);
+    expect(code).not.toMatch(/^\s+release:/m);
   });
 });
