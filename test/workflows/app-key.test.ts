@@ -1,41 +1,49 @@
 import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { describe, expect, it } from "vitest";
 
 const SECRET = "AGENT_APP_PRIVATE_KEY";
-const DIR = ".github/workflows";
+const DIR = fileURLToPath(new URL("../../.github/workflows", import.meta.url));
+const OUTSIDE_JOB = "<outside a job>";
+// Ways to reach every secret without naming the App key.
+const BROAD_ACCESS = [/secrets:\s*inherit/, /toJSON\(\s*secrets\s*\)/, /secrets\[/];
 
-/** Job ids that read the App key without `environment: agent-app`. */
-export function violations(text: string): string[] {
+/** Problems that would let a workflow read the App key outside `agent-app`. */
+function violations(text: string): string[] {
   const bad: string[] = [];
   let inJobs = false;
-  let job: string | undefined;
+  let job = OUTSIDE_JOB;
   let lines: string[] = [];
   const flush = () => {
-    if (
-      job &&
-      lines.some((l) => l.includes(SECRET)) &&
-      !lines.some((l) => /^ {4}environment:\s*agent-app\s*$/.test(l))
-    ) {
-      bad.push(job);
-    }
+    if (!lines.some((l) => l.includes(SECRET))) return;
+    const scoped =
+      job !== OUTSIDE_JOB &&
+      lines.some((l) =>
+        /^ {4}environment:\s*["']?agent-app["']?\s*(#.*)?$/.test(l),
+      );
+    if (!scoped) bad.push(job);
   };
   for (const line of text.split("\n")) {
+    if (/^\s*(#.*)?$/.test(line)) continue; // blanks and comments
     if (/^\S/.test(line)) {
       flush();
-      job = undefined;
-      lines = [];
+      job = OUTSIDE_JOB;
+      lines = [line];
       inJobs = line.startsWith("jobs:");
-    } else if (inJobs && /^ {2}[\w-]+:\s*$/.test(line)) {
+    } else if (inJobs && /^ {2}[\w-]+:\s*(#.*)?$/.test(line)) {
       flush();
-      job = line.trim().slice(0, -1);
+      job = line.trim().split(":")[0] ?? OUTSIDE_JOB;
       lines = [];
     } else {
       lines.push(line);
     }
   }
   flush();
+  for (const pattern of BROAD_ACCESS) {
+    if (pattern.test(text)) bad.push(String(pattern));
+  }
   return bad;
 }
 
@@ -64,8 +72,34 @@ describe("agent App key scope", () => {
     ]);
   });
 
+  it("is not switched off by a column-0 comment inside jobs", () => {
+    const text = `jobs:
+  a:
+    runs-on: x
+# note
+  b:
+    steps:
+      - run: echo \${{ secrets.${SECRET} }}
+`;
+    expect(violations(text)).toEqual(["b"]);
+  });
+
+  it("flags the key outside any job", () => {
+    expect(violations(`env:\n  K: \${{ secrets.${SECRET} }}\njobs:\n`)).toEqual([
+      OUTSIDE_JOB,
+    ]);
+  });
+
+  it("flags broad secret access", () => {
+    expect(violations("jobs:\n  a:\n    secrets: inherit\n")).toHaveLength(1);
+    expect(violations("jobs:\n  a:\n    env: ${{ toJSON(secrets) }}\n")).toHaveLength(1);
+    expect(violations("jobs:\n  a:\n    env: ${{ secrets['X'] }}\n")).toHaveLength(1);
+  });
+
   it("every workflow uses the key only through agent-app", () => {
-    for (const file of readdirSync(DIR).filter((f) => f.endsWith(".yml"))) {
+    const files = readdirSync(DIR).filter((f) => /\.ya?ml$/.test(f));
+    expect(files.length).toBeGreaterThan(0);
+    for (const file of files) {
       expect(violations(readFileSync(join(DIR, file), "utf8")), file).toEqual(
         [],
       );
