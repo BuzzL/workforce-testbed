@@ -31,15 +31,16 @@ describe("deploy workflow", () => {
   const text = readFileSync(DEPLOY, "utf8");
   const found = environments(text);
 
-  it("gates test on push and demo on release", () => {
+  it("gates test on pull requests, qa on main and demo on release", () => {
     expect(guards(text)).toEqual({
-      test: "github.event_name == 'push'",
+      test: "github.event_name == 'pull_request'",
+      qa: "github.event_name == 'push'",
       demo: "github.event_name == 'release'",
     });
   });
 
-  it("deploys to test on push and to demo on release", () => {
-    expect(found).toEqual(["test", "demo"]);
+  it("deploys to test, qa and demo", () => {
+    expect(found).toEqual(["test", "qa", "demo"]);
   });
 
   it("only targets environments the app knows", () => {

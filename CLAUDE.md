@@ -30,7 +30,7 @@ The App key is an **environment secret** of the GitHub Environment `agent-app` (
 
 ## Deploys
 
-`.github/workflows/deploy.yml` deploys to the `test` GitHub Environment on every push to `main`, and to `demo` when a release is published. `demo` needs maintainer approval and only accepts `main` or `v*` tags. `qa` exists as an app environment but has no deploy job yet: how promotion works is defined in the Linear project (milestone M6). `APP_ENV` takes `test` (the default), `qa` or `demo`. The deploy step is a stub until `workforce-infra` provides the accounts and OIDC roles.
+`.github/workflows/deploy.yml` deploys to the `test` GitHub Environment for every pull request, to `qa` on every push to `main`, and to `demo` when a release (a `v*` tag) is published. `demo` needs maintainer approval and only accepts `main` or `v*` tags. The finer promotion mechanics (canary rollout, rollback) are defined in the Linear project (milestone M6). `APP_ENV` takes `test` (the default), `qa` or `demo`. The deploy step is a stub until `workforce-infra` provides the accounts and OIDC roles.
 
 ## Layout
 
