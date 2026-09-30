@@ -30,8 +30,8 @@ The key is an **environment secret** of the GitHub Environment `agent-app` (limi
 
 ### GitHub App `buzzl-workforce-agent`: minimal permissions
 
-- Repository permissions: **Contents** write (push branches, tags, releases), **Pull requests** write (open and update PRs), **Workflows** write (only so agent PRs may edit `.github/workflows/*`; drop it if that is never needed), **Checks** read, **Actions** read (runs and logs), **Metadata** read.
-- Not granted: Administration, Environments, Secrets, Variables, Deployments. Checked by hand on 2026-09-30 by probing the API (403 for the missing permissions and for Actions cancel/delete).
+- Repository permissions: **Contents** write (push branches, tags, releases), **Pull requests** write (open and update PRs), **Checks** read, **Actions** read (runs and logs), **Metadata** read.
+- Not granted: **Workflows** (agent PRs cannot edit `.github/workflows/*`; add it back only for a task that needs it), Administration, Environments, Secrets, Variables, Deployments. Checked by hand on 2026-09-30 by probing the API (403 for the missing permissions and for Actions cancel/delete).
 - Key storage: the `.pem` lives in a local file now and as the `agent-app` environment secret in the repos above. Later (M4) it moves to Secrets Manager in the `workforce` account, injected into the ECS task, and the GitHub copies are removed. Rotate the key when it moves.
 
 ## Deploys
