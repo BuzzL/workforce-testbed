@@ -1,6 +1,6 @@
 {
   "name": "workforce-testbed",
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:4-24-trixie",
+  "image": "ghcr.io/buzzl/workforce-images/base@sha256:215494f60fa32cc4532cb132cb7c26b618cf381acb194d44280ceb090c4b7f0c",
   "postCreateCommand": "npm ci",
   "forwardPorts": [3000],
   "customizations": {
