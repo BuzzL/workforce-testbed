@@ -39,6 +39,7 @@ describe("http api", () => {
     });
     expect(created.statusCode).toBe(201);
     const issue = created.json<{ id: string; title: string; status: string }>();
+    expect(created.headers.location).toBe(`/issues/${issue.id}`);
     expect(issue).toMatchObject({ title: "Add search", status: "open" });
 
     const list = await app.inject({ method: "GET", url: "/issues" });
