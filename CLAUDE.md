@@ -24,7 +24,9 @@ No local Node? Push the branch, then run `gh workflow run autofix.yml --ref <bra
 
 ## Releases
 
-release-please (`.github/workflows/release.yml`) keeps a release PR open on `main` and derives the next SemVer from Conventional Commits. Merging it tags `vX.Y.Z` and publishes a GitHub Release. It authenticates as the `buzzl-workforce-agent` GitHub App (secret `AGENT_APP_PRIVATE_KEY`, variable `AGENT_APP_CLIENT_ID`) so the release PR triggers CI.
+release-please (`.github/workflows/release.yml`) keeps a release PR open on `main` and derives the next SemVer from Conventional Commits. Merging it tags `vX.Y.Z` and publishes a GitHub Release. It authenticates as the workforce agent GitHub App (secret `AGENT_APP_PRIVATE_KEY`, variable `AGENT_APP_CLIENT_ID`) so the release PR triggers CI.
+
+The App key is an **environment secret** of the GitHub Environment `agent-app` (limited to `main`), used by the `release-please` job via `environment: agent-app`, so PR workflows cannot read it. `test/workflows/app-key.test.ts` (a line-based lint) fails if a workflow uses it without that environment. Setup, minimal App permissions, key storage and rotation live in one place: `docs/AGENT_APP_KEY.md` in `workforce-images`.
 
 ## Deploys
 
