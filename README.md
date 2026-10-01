@@ -17,6 +17,32 @@ The code is deliberately small but real, with tests and CI, so every agent chang
 | [workforce-images](https://github.com/BuzzL/workforce-images) | Developer container images (base, Python) for agents and devcontainers |
 | **workforce-testbed** | This repo: the TypeScript codebase the agents iterate on |
 
+## Local development
+
+Development happens inside the repo's devcontainer, which uses the published `base` image from [workforce-images](https://github.com/BuzzL/workforce-images), the same `base` image the agents run. You need no local Node.
+
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/), running (`docker info` works), and network access to pull the image from GHCR on the first start
+- [Visual Studio Code](https://code.visualstudio.com/)
+- the [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension (`ms-vscode-remote.remote-containers`)
+
+### Open it
+
+1. Clone the repo and open it in VS Code: `git clone https://github.com/BuzzL/workforce-testbed.git && code workforce-testbed`.
+2. Choose **Reopen in Container** when prompted, or run **Dev Containers: Reopen in Container** from the command palette. The first start pulls the image (pinned by digest) and runs `npm ci`.
+3. In the integrated terminal, check the toolchain and the tests:
+
+   ```sh
+   git --version; gh --version; node -v; claude --version; aws --version; terraform version
+   id -un        # dev
+   npm run lint && npm run typecheck && npm test
+   ```
+
+4. Optionally start the server with `npm run build && PORT=3000 npm start`. Port 3000 is forwarded, so `http://localhost:3000/health` answers with `"environment": "test"`.
+
+ESLint, Prettier and Vitest are installed in the container for you. If you need `gh` to talk to GitHub and it is not logged in inside the container, run `gh auth login`. If the container fails to start, **Dev Containers: Show Container Log** has the details.
+
 ## Environments
 
 | Environment | Deployed when | Protection |
