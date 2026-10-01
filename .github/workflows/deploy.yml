@@ -1,25 +1,28 @@
-# Deploys to development on every push to main and to production when a
-# release is published. The deploy step is a stub until workforce-infra
-# provides the environment accounts and the GitHub OIDC roles.
+# Deploys to test for every pull request, to qa on every push to main and
+# to demo when a v* tag is pushed. The release/* branches (the real
+# production release) are manual and deliberately not handled here. The
+# deploy step is a stub until workforce-infra provides the environment
+# accounts and the GitHub OIDC roles.
 name: Deploy
 
 on:
+  pull_request:
+    branches: [main]
   push:
     branches: [main]
-  release:
-    types: [published]
+    tags: ["v*"]
 
 permissions:
   contents: read
 
 jobs:
-  development:
-    if: github.event_name == 'push'
+  test:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    environment: development
+    environment: test
     concurrency:
-      group: deploy-development
-      cancel-in-progress: false
+      group: deploy-test-${{ github.event.pull_request.number }}
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
@@ -29,14 +32,14 @@ jobs:
       - run: npm ci
       - run: npm run build
       - name: Deploy (stub)
-        run: echo "Would deploy ${GITHUB_SHA::7} to development"
+        run: echo "Would deploy ${GITHUB_SHA::7} to test"
 
-  production:
-    if: github.event_name == 'release'
+  qa:
+    if: github.ref_type == 'branch' && github.event_name == 'push'
     runs-on: ubuntu-latest
-    environment: production
+    environment: qa
     concurrency:
-      group: deploy-production
+      group: deploy-qa
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v7
@@ -47,4 +50,22 @@ jobs:
       - run: npm ci
       - run: npm run build
       - name: Deploy (stub)
-        run: echo "Would deploy ${{ github.event.release.tag_name }} to production"
+        run: echo "Would deploy ${GITHUB_SHA::7} to qa"
+
+  demo:
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    environment: demo
+    concurrency:
+      group: deploy-demo
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy (stub)
+        run: echo "Would deploy ${GITHUB_REF_NAME} to demo"

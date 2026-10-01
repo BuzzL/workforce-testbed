@@ -3,18 +3,32 @@ import { describe, expect, it } from "vitest";
 import { APP_ENVS, loadConfig } from "../../src/config/index.js";
 
 describe("loadConfig", () => {
-  it("defaults to development when APP_ENV is unset", () => {
-    expect(loadConfig({}).env).toBe("development");
+  it("defaults to test when APP_ENV is unset", () => {
+    expect(loadConfig({}).env).toBe("test");
+  });
+
+  it("knows the test, qa and demo environments", () => {
+    expect(APP_ENVS).toEqual(["test", "qa", "demo"]);
   });
 
   it.each(APP_ENVS)("loads the %s configuration", (env) => {
     expect(loadConfig({ APP_ENV: env }).env).toBe(env);
   });
 
-  it("logs less in production than in development", () => {
-    expect(loadConfig({ APP_ENV: "development" }).logLevel).toBe("debug");
-    expect(loadConfig({ APP_ENV: "production" }).logLevel).toBe("info");
+  it("logs more in test than in qa and demo", () => {
+    expect(loadConfig({ APP_ENV: "test" }).logLevel).toBe("debug");
+    expect(loadConfig({ APP_ENV: "qa" }).logLevel).toBe("info");
+    expect(loadConfig({ APP_ENV: "demo" }).logLevel).toBe("info");
   });
+
+  it.each(["development", "production"])(
+    "rejects the retired %s environment",
+    (env) => {
+      expect(() => loadConfig({ APP_ENV: env })).toThrow(
+        new RegExp(`Unknown APP_ENV "${env}"`),
+      );
+    },
+  );
 
   it("rejects an unknown environment", () => {
     expect(() => loadConfig({ APP_ENV: "staging" })).toThrow(

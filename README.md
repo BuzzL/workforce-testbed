@@ -21,8 +21,9 @@ The code is deliberately small but real, with tests and CI, so every agent chang
 
 | Environment | Deployed when | Protection |
 |---|---|---|
-| `development` | every merge to `main` | none |
-| `production` | a release is published | maintainer approval |
+| `test` | every pull request | none |
+| `qa` | every merge to `main` | none |
+| `demo` | a `v*` tag is pushed | maintainer approval |
 
 ## Contributing
 
