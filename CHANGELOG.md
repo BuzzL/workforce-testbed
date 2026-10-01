@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.2.0](https://github.com/BuzzL/workforce-testbed/compare/v0.1.0...v0.2.0) (2026-10-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* APP_ENV values development and production are rejected; use test or demo.
+
+### Features
+
+* return a Location header when creating an issue ([#22](https://github.com/BuzzL/workforce-testbed/issues/22)) ([1033551](https://github.com/BuzzL/workforce-testbed/commit/1033551bb1840a236125b119e90ae11e87d63c9f))
+
+
+### Code Refactoring
+
+* rename the environments to test, qa and demo ([#24](https://github.com/BuzzL/workforce-testbed/issues/24)) ([cfefb09](https://github.com/BuzzL/workforce-testbed/commit/cfefb09d4734317aba4bc8036e36e1e4369d0572))
+
 ## 0.1.0 (2026-09-29)
 
 
