@@ -43,6 +43,12 @@ describe("deploy workflow", () => {
     expect(found).toEqual(["test", "qual", "demo"]);
   });
 
+  it("names every deployed environment with exactly four lowercase letters", () => {
+    for (const env of found) {
+      expect(env).toMatch(/^[a-z]{4}$/);
+    }
+  });
+
   it("only targets environments the app knows", () => {
     for (const env of found) {
       expect(APP_ENVS as readonly string[]).toContain(env);

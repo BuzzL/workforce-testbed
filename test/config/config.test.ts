@@ -11,6 +11,12 @@ describe("loadConfig", () => {
     expect(APP_ENVS).toEqual(["test", "qual", "demo"]);
   });
 
+  it("names every environment with exactly four lowercase letters", () => {
+    for (const env of APP_ENVS) {
+      expect(env).toMatch(/^[a-z]{4}$/);
+    }
+  });
+
   it.each(APP_ENVS)("loads the %s configuration", (env) => {
     expect(loadConfig({ APP_ENV: env }).env).toBe(env);
   });
@@ -21,7 +27,7 @@ describe("loadConfig", () => {
     expect(loadConfig({ APP_ENV: "demo" }).logLevel).toBe("info");
   });
 
-  it.each(["development", "production"])(
+  it.each(["development", "production", "qa"])(
     "rejects the retired %s environment",
     (env) => {
       expect(() => loadConfig({ APP_ENV: env })).toThrow(
