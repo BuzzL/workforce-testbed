@@ -1,4 +1,4 @@
-# Deploys to test for every pull request, to qual on every push to main and
+# Deploys to test for every pull request, to quality on every push to main and
 # to demo when a v* tag is pushed. The release/* branches (the real
 # production release) are manual and deliberately not handled here. The
 # deploy step is a stub until workforce-infra provides the environment
@@ -34,12 +34,12 @@ jobs:
       - name: Deploy (stub)
         run: echo "Would deploy ${GITHUB_SHA::7} to test"
 
-  qual:
+  quality:
     if: github.ref_type == 'branch' && github.event_name == 'push'
     runs-on: ubuntu-latest
-    environment: qual
+    environment: quality
     concurrency:
-      group: deploy-qual
+      group: deploy-quality
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v7
@@ -50,7 +50,7 @@ jobs:
       - run: npm ci
       - run: npm run build
       - name: Deploy (stub)
-        run: echo "Would deploy ${GITHUB_SHA::7} to qual"
+        run: echo "Would deploy ${GITHUB_SHA::7} to quality"
 
   demo:
     if: github.ref_type == 'tag'

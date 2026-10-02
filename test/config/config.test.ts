@@ -7,28 +7,22 @@ describe("loadConfig", () => {
     expect(loadConfig({}).env).toBe("test");
   });
 
-  it("knows the test, qual and demo environments", () => {
-    expect(APP_ENVS).toEqual(["test", "qual", "demo"]);
-  });
-
-  it("names every environment with exactly four lowercase letters", () => {
-    for (const env of APP_ENVS) {
-      expect(env).toMatch(/^[a-z]{4}$/);
-    }
+  it("knows the test, quality and demo environments", () => {
+    expect(APP_ENVS).toEqual(["test", "quality", "demo"]);
   });
 
   it.each(APP_ENVS)("loads the %s configuration", (env) => {
     expect(loadConfig({ APP_ENV: env }).env).toBe(env);
   });
 
-  it("logs more in test than in qual and demo", () => {
+  it("logs more in test than in quality and demo", () => {
     expect(loadConfig({ APP_ENV: "test" }).logLevel).toBe("debug");
-    expect(loadConfig({ APP_ENV: "qual" }).logLevel).toBe("info");
+    expect(loadConfig({ APP_ENV: "quality" }).logLevel).toBe("info");
     expect(loadConfig({ APP_ENV: "demo" }).logLevel).toBe("info");
   });
 
-  it.each(["development", "production", "qa"])(
-    "rejects the retired %s environment",
+  it.each(["development", "production", "qa", "qual"])(
+    "rejects the retired or abbreviated %s environment",
     (env) => {
       expect(() => loadConfig({ APP_ENV: env })).toThrow(
         new RegExp(`Unknown APP_ENV "${env}"`),

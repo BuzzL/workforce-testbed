@@ -1,6 +1,6 @@
 import type { AppConfig } from "./types.js";
 
-export const qual: AppConfig = {
-  env: "qual",
+export const quality: AppConfig = {
+  env: "quality",
   logLevel: "info",
 };

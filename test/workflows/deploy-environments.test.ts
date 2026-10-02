@@ -31,22 +31,16 @@ describe("deploy workflow", () => {
   const text = readFileSync(DEPLOY, "utf8");
   const found = environments(text);
 
-  it("gates test on pull requests, qual on main and demo on tags", () => {
+  it("gates test on pull requests, quality on main and demo on tags", () => {
     expect(guards(text)).toEqual({
       test: "github.event_name == 'pull_request'",
-      qual: "github.ref_type == 'branch' && github.event_name == 'push'",
+      quality: "github.ref_type == 'branch' && github.event_name == 'push'",
       demo: "github.ref_type == 'tag'",
     });
   });
 
-  it("deploys to test, qual and demo", () => {
-    expect(found).toEqual(["test", "qual", "demo"]);
-  });
-
-  it("names every deployed environment with exactly four lowercase letters", () => {
-    for (const env of found) {
-      expect(env).toMatch(/^[a-z]{4}$/);
-    }
+  it("deploys to test, quality and demo", () => {
+    expect(found).toEqual(["test", "quality", "demo"]);
   });
 
   it("only targets environments the app knows", () => {
