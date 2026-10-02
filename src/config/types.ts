@@ -1,4 +1,4 @@
-export const APP_ENVS = ["test", "qa", "demo"] as const;
+export const APP_ENVS = ["test", "quality", "demo"] as const;
 
 export type AppEnv = (typeof APP_ENVS)[number];
 
