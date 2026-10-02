@@ -48,7 +48,7 @@ ESLint, Prettier and Vitest are installed in the container for you. If you need 
 | Environment | Deployed when | Protection |
 |---|---|---|
 | `test` | every pull request | none |
-| `qa` | every merge to `main` | none |
+| `qual` | every merge to `main` | none |
 | `demo` | a `v*` tag is pushed | maintainer approval |
 
 ## Contributing

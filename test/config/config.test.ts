@@ -7,17 +7,17 @@ describe("loadConfig", () => {
     expect(loadConfig({}).env).toBe("test");
   });
 
-  it("knows the test, qa and demo environments", () => {
-    expect(APP_ENVS).toEqual(["test", "qa", "demo"]);
+  it("knows the test, qual and demo environments", () => {
+    expect(APP_ENVS).toEqual(["test", "qual", "demo"]);
   });
 
   it.each(APP_ENVS)("loads the %s configuration", (env) => {
     expect(loadConfig({ APP_ENV: env }).env).toBe(env);
   });
 
-  it("logs more in test than in qa and demo", () => {
+  it("logs more in test than in qual and demo", () => {
     expect(loadConfig({ APP_ENV: "test" }).logLevel).toBe("debug");
-    expect(loadConfig({ APP_ENV: "qa" }).logLevel).toBe("info");
+    expect(loadConfig({ APP_ENV: "qual" }).logLevel).toBe("info");
     expect(loadConfig({ APP_ENV: "demo" }).logLevel).toBe("info");
   });
 

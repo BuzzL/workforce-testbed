@@ -1,5 +1,5 @@
 import { demo } from "./demo.js";
-import { qa } from "./qa.js";
+import { qual } from "./qual.js";
 import { test } from "./test.js";
 import { APP_ENVS, type AppConfig, type AppEnv } from "./types.js";
 
@@ -10,7 +10,7 @@ export {
   type LogLevel,
 } from "./types.js";
 
-const configs: Record<AppEnv, AppConfig> = { test, qa, demo };
+const configs: Record<AppEnv, AppConfig> = { test, qual, demo };
 
 function isAppEnv(value: string): value is AppEnv {
   return (APP_ENVS as readonly string[]).includes(value);
