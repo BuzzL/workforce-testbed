@@ -21,7 +21,7 @@
     "test": "vitest run --coverage"
   },
   "dependencies": {
-    "fastify": "^5.12.5"
+    "fastify": "^5.12.7"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
